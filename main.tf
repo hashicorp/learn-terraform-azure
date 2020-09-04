@@ -2,10 +2,14 @@
 terraform {
   required_providers {
     azurerm = {
-      source  = "hashicorp/azurerm"
-      version = "~>1.31"
+      source = "hashicorp/azurerm"
+      version = ">= 2.26"
     }
   }
+}
+
+provider "azurerm" {
+  features {}
 }
 
 # Create a resource group
@@ -29,7 +33,7 @@ resource "azurerm_subnet" "subnet" {
   name                 = "${var.prefix}TFSubnet"
   resource_group_name  = azurerm_resource_group.rg.name
   virtual_network_name = azurerm_virtual_network.vnet.name
-  address_prefixes     = ["10.0.1.0/24"]
+  address_prefixes       = ["10.0.1.0/24"]
 }
 
 # Create public IP
@@ -74,11 +78,6 @@ resource "azurerm_network_interface" "nic" {
     private_ip_address_allocation = "dynamic"
     public_ip_address_id          = azurerm_public_ip.publicip.id
   }
-}
-
-resource "azurerm_network_interface_security_group_association" "nic-nsg" {
-  network_interface_id      = azurerm_network_interface.nic.id
-  network_security_group_id = azurerm_network_security_group.nsg.id
 }
 
 # Create a Linux virtual machine
